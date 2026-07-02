@@ -1,0 +1,250 @@
+/* DeskFlow — Declarative Textual CSS
+ * Theme: Tokyo Night-inspired dark palette with custom accents
+ *
+ * Color palette:
+ *   Background:   #1a1b26  (deep dark navy)
+ *   Surface:      #24283b  (slightly lighter panel bg)
+ *   Accent:       #7aa2f7  (soft cornflower blue)
+ *   Primary:      #bb9af7  (muted purple)
+ *   Success:      #9ece6a  (spring green)
+ *   Warning:      #e0af68  (warm amber)
+ *   Error:        #f7768e  (soft red)
+ *   Text:         #c0caf5  (light lavender-white)
+ *   Muted:        #565f89  (dim comment grey)
+ */
+
+/* ── Root layout ────────────────────────────────────────────── */
+Screen {
+    background: #1a1b26;
+    color: #c0caf5;
+    layout: grid;
+    grid-size: 2;
+    grid-columns: 3fr 2fr;
+}
+
+/* ── Left panel (task list) ─────────────────────────────────── */
+#left-panel {
+    border-right: tall #7aa2f7;
+    padding: 1 2;
+    height: 100%;
+    background: #1a1b26;
+}
+
+#task-list-title {
+    text-align: center;
+    text-style: bold;
+    color: #bb9af7;
+    margin-bottom: 1;
+    padding: 0 1;
+}
+
+#file-label {
+    text-align: center;
+    color: #565f89;
+    text-style: italic;
+    margin-bottom: 1;
+}
+
+#task-list {
+    width: 100%;
+    height: 1fr;
+    border: round #7aa2f7;
+    margin-top: 1;
+    background: #1a1b26;
+    color: #c0caf5;
+    scrollbar-color: #7aa2f7;
+    scrollbar-background: #24283b;
+}
+
+/* ── Progress bar below task list ──────────────────────────── */
+#progress-bar {
+    height: 1;
+    margin-top: 1;
+    color: #9ece6a;
+    text-align: center;
+}
+
+/* ── Right panel (Pomodoro timer) ───────────────────────────── */
+#right-panel {
+    padding: 1 2;
+    height: 100%;
+    align: center middle;
+    layout: vertical;
+    background: #1a1b26;
+}
+
+#timer-title {
+    text-align: center;
+    text-style: bold;
+    color: #bb9af7;
+    margin-bottom: 0;
+}
+
+#session-label {
+    text-align: center;
+    text-style: bold;
+    color: #e0af68;
+    margin-bottom: 1;
+}
+
+#dot-progress {
+    text-align: center;
+    color: #7aa2f7;
+    margin-bottom: 1;
+}
+
+Digits {
+    color: #7aa2f7;
+    text-align: center;
+    margin: 1 0;
+}
+
+#session-counter-label {
+    text-align: center;
+    color: #565f89;
+    margin-bottom: 2;
+}
+
+/* ── Button row ──────────────────────────────────────────────── */
+.button-row {
+    layout: horizontal;
+    align: center middle;
+    height: 3;
+    width: 100%;
+    margin-bottom: 1;
+}
+
+Button {
+    margin: 0 1;
+    background: #24283b;
+    color: #c0caf5;
+    border: tall #565f89;
+}
+
+Button:hover {
+    background: #7aa2f7;
+    color: #1a1b26;
+    border: tall #7aa2f7;
+}
+
+Button:focus {
+    border: tall #bb9af7;
+}
+
+#btn-start {
+    color: #9ece6a;
+    border: tall #9ece6a;
+}
+
+#btn-start:hover {
+    background: #9ece6a;
+    color: #1a1b26;
+}
+
+#btn-pause {
+    color: #e0af68;
+    border: tall #e0af68;
+}
+
+#btn-pause:hover {
+    background: #e0af68;
+    color: #1a1b26;
+}
+
+#btn-reset {
+    color: #f7768e;
+    border: tall #f7768e;
+}
+
+#btn-reset:hover {
+    background: #f7768e;
+    color: #1a1b26;
+}
+
+/* ── Help footer ─────────────────────────────────────────────── */
+#help-bar {
+    height: 1;
+    text-align: center;
+    color: #565f89;
+    margin-top: 1;
+    dock: bottom;
+    background: #24283b;
+    padding: 0 2;
+}
+
+/* ── Conflict modal ──────────────────────────────────────────── */
+ConflictModal {
+    align: center middle;
+}
+
+#conflict-dialog {
+    width: 60;
+    height: auto;
+    border: double #e0af68;
+    background: #24283b;
+    padding: 2 4;
+    align: center middle;
+    layout: vertical;
+}
+
+#conflict-title {
+    text-style: bold;
+    color: #e0af68;
+    text-align: center;
+    margin-bottom: 1;
+}
+
+#conflict-body {
+    color: #c0caf5;
+    text-align: center;
+    margin-bottom: 2;
+}
+
+#conflict-buttons {
+    layout: horizontal;
+    align: center middle;
+    height: 3;
+}
+
+/* ── Error screen ────────────────────────────────────────────── */
+#error-dialog {
+    width: 60;
+    height: auto;
+    border: double #f7768e;
+    background: #24283b;
+    padding: 2 4;
+    align: center middle;
+    layout: vertical;
+}
+
+#error-title {
+    text-style: bold;
+    color: #f7768e;
+    text-align: center;
+    margin-bottom: 1;
+}
+
+#error-body {
+    color: #c0caf5;
+    text-align: center;
+    margin-bottom: 2;
+}
+
+/* ── Read-only section headers in task list ──────────────────── */
+.section-header {
+    color: #bb9af7;
+    text-style: bold;
+    padding: 0 1;
+}
+
+.read-only-line {
+    color: #565f89;
+    text-style: italic;
+}
+
+/* ── Title shared style ──────────────────────────────────────── */
+.title {
+    text-align: center;
+    text-style: bold;
+    color: #bb9af7;
+}

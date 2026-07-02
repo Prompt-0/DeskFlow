@@ -1,0 +1,29 @@
+[project]
+name = "deskflow"
+version = "0.1.0"
+description = "A terminal-native Markdown-driven Pomodoro and checklist workflow manager"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "textual>=0.80.0",
+    "rich>=13.7.0",
+    "watchdog>=4.0.0",
+]
+
+[project.scripts]
+deskflow = "deskflow.main:run"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "textual-dev>=0.80.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
