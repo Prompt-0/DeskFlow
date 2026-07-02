@@ -145,6 +145,14 @@ class DeskFlowApp(App[None]):
 
     def compose(self) -> ComposeResult:
         """Build the two-panel layout."""
+        # Compute initial timer display string from config
+        cfg = self._config
+        work_secs = int(cfg.work_seconds)
+        initial_time = f"{work_secs // 60:02d}:{work_secs % 60:02d}"
+        max_p = cfg.timer.pomodoros_before_long_break
+        initial_dots = "○ " * max_p
+        initial_dots = initial_dots.strip() + f"  (0/{max_p})"
+
         with Container(id="left-panel"):
             yield Label("📋  DeskFlow", id="task-list-title")
             yield Label(
@@ -154,11 +162,11 @@ class DeskFlowApp(App[None]):
             yield Label("", id="progress-bar")
 
         with Container(id="right-panel"):
-            yield Label("🍅  Pomodoro", id="timer-title")
-            yield Label("WORK SESSION", id="session-label")
-            yield Label("○ ○ ○ ○  (0/4)", id="dot-progress")
-            yield Digits("25:00", id="timer-digits")
-            yield Label("", id="session-counter-label")
+            yield Label("🍅  Pomodoro Timer", id="timer-title")
+            yield Label(f"🍅  WORK SESSION", id="session-label")
+            yield Label(initial_dots, id="dot-progress")
+            yield Digits(initial_time, id="timer-digits")
+            yield Label(f"Session 1 of {max_p} · Press [bold]s[/bold] to start", id="session-counter-label")
             with Horizontal(classes="button-row"):
                 yield Button("▶ Start", id="btn-start", variant="success")
                 yield Button("⏸ Pause", id="btn-pause", variant="warning")
@@ -380,12 +388,26 @@ class DeskFlowApp(App[None]):
             digits = self.query_one("#timer-digits", Digits)
             session_label = self.query_one("#session-label", Label)
             dot_label = self.query_one("#dot-progress", Label)
+            counter_label = self.query_one("#session-counter-label", Label)
 
             digits.update(self._timer.remaining_fmt())
 
             session = self._timer.session_type
             session_label.update(f"{session.emoji}  {session.label}")
             dot_label.update(self._timer.dot_progress())
+
+            # Update session counter hint
+            max_p = self._config.timer.pomodoros_before_long_break
+            count = self._timer.pomodoro_count
+            if self._timer.is_running:
+                next_n = count + 1
+                counter_label.update(f"Pomodoro {next_n} of {max_p}")
+            elif self._timer.is_paused:
+                counter_label.update("⏸  Paused")
+            else:
+                next_n = count + 1
+                state_str = "Press [bold]s[/bold] to start"
+                counter_label.update(f"Session {next_n} of {max_p} · {state_str}")
         except Exception:
             pass  # Widgets may not be mounted yet
 

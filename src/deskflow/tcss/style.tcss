@@ -34,7 +34,7 @@ Screen {
     text-align: center;
     text-style: bold;
     color: #bb9af7;
-    margin-bottom: 1;
+    margin-bottom: 0;
     padding: 0 1;
 }
 
@@ -42,7 +42,7 @@ Screen {
     text-align: center;
     color: #565f89;
     text-style: italic;
-    margin-bottom: 1;
+    margin-bottom: 0;
 }
 
 #task-list {
@@ -56,6 +56,35 @@ Screen {
     scrollbar-background: #24283b;
 }
 
+/* ── SelectionList checkbox button overrides ─────────────────
+ * In Textual 8, the toggle button uses BUTTON_INNER="X".
+ * We make the unselected "X" dim (looks like an empty box)
+ * and the selected "X" bright green (looks like a check).
+ * ─────────────────────────────────────────────────────────── */
+SelectionList > .selection-list--button {
+    /* Unchecked: dim grey ▐X▌ — reads as an empty checkbox */
+    color: #565f89;
+    background: #1a1b26;
+}
+
+SelectionList > .selection-list--button-highlighted {
+    /* Unchecked + focused row: slightly brighter but still grey */
+    color: #7aa2f7;
+    background: #1a1b26;
+}
+
+SelectionList > .selection-list--button-selected {
+    /* Checked: bright spring green ▐X▌ — clearly "done" */
+    color: #9ece6a;
+    background: #1a1b26;
+}
+
+SelectionList > .selection-list--button-selected-highlighted {
+    /* Checked + focused row */
+    color: #9ece6a;
+    background: #1a1b26;
+}
+
 /* ── Progress bar below task list ──────────────────────────── */
 #progress-bar {
     height: 1;
@@ -66,7 +95,7 @@ Screen {
 
 /* ── Right panel (Pomodoro timer) ───────────────────────────── */
 #right-panel {
-    padding: 1 2;
+    padding: 2 3;
     height: 100%;
     align: center middle;
     layout: vertical;
@@ -77,32 +106,37 @@ Screen {
     text-align: center;
     text-style: bold;
     color: #bb9af7;
-    margin-bottom: 0;
+    margin-bottom: 1;
+    width: 100%;
 }
 
 #session-label {
     text-align: center;
     text-style: bold;
     color: #e0af68;
-    margin-bottom: 1;
+    margin-bottom: 0;
+    width: 100%;
 }
 
 #dot-progress {
     text-align: center;
     color: #7aa2f7;
     margin-bottom: 1;
+    width: 100%;
 }
 
 Digits {
     color: #7aa2f7;
     text-align: center;
     margin: 1 0;
+    width: 100%;
 }
 
 #session-counter-label {
     text-align: center;
     color: #565f89;
-    margin-bottom: 2;
+    margin-bottom: 1;
+    width: 100%;
 }
 
 /* ── Button row ──────────────────────────────────────────────── */
@@ -111,7 +145,7 @@ Digits {
     align: center middle;
     height: 3;
     width: 100%;
-    margin-bottom: 1;
+    margin-top: 1;
 }
 
 Button {
@@ -166,7 +200,6 @@ Button:focus {
     height: 1;
     text-align: center;
     color: #565f89;
-    margin-top: 1;
     dock: bottom;
     background: #24283b;
     padding: 0 2;
