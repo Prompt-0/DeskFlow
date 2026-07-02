@@ -103,9 +103,10 @@ async def test_dot_progress_displayed(tmp_path: Path) -> None:
     app = DeskFlowApp(target_file=test_md, config=_make_config())
     async with app.run_test(size=(120, 40)) as pilot:
         dot_label = app.query_one("#dot-progress", Label)
-        dot_text = str(dot_label.renderable)
-        # Should contain dots and fraction
-        assert "○" in dot_text or "●" in dot_text
+        # In Textual 8+, Label.content is a plain str with the current content
+        dot_text = dot_label.content
+        # Should contain circle dots and fraction notation
+        assert "○" in dot_text or "●" in dot_text or "/" in dot_text
 
 
 # ── Task toggle ───────────────────────────────────────────────────────────────
