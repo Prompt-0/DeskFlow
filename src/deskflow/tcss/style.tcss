@@ -67,6 +67,12 @@ SelectionList > .selection-list--button {
     background: #1a1b26;
 }
 
+SelectionList > .selection-list--button:disabled {
+    /* Preserve markup colors for headings and read-only text */
+    color: auto;
+    opacity: 1.0;
+}
+
 SelectionList > .selection-list--button-highlighted {
     /* Unchecked + focused row: slightly brighter but still grey */
     color: #7aa2f7;

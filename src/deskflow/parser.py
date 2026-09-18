@@ -115,28 +115,24 @@ def parse_markdown(path: Path) -> ParsedDocument:
     return ParsedDocument(tasks=tasks, lines=lines, sha256=sha)
 
 
-def build_display_lines(path: Path) -> list[LineInfo]:
-    """Return all display lines for the TUI task list, including non-task lines.
+def build_display_lines(doc: ParsedDocument) -> list[LineInfo]:
+    """Extract displayable lines (tasks and non-tasks) from a Markdown file.
 
     Non-task lines (headers, paragraphs, etc.) are included as read-only entries
     with ``is_task=False``.
 
     Args:
-        path: Path to the Markdown file.
+        doc: The parsed Markdown document.
 
     Returns:
         List of :class:`LineInfo` items in document order.
     """
-    content = path.read_bytes()
-    raw_text = content.decode("utf-8", errors="replace")
-    lines = raw_text.splitlines(keepends=True)
+    lines = doc.lines
 
     result: list[LineInfo] = []
     in_code_block = False
     task_map: dict[int, Task] = {}
 
-    # Build task map from a full parse first
-    doc = parse_markdown(path)
     for t in doc.tasks:
         task_map[t.line_index] = t
 

@@ -46,7 +46,7 @@ async def test_deskflow_ui_execution(tmp_path: Path) -> None:
         assert app.query_one("#right-panel") is not None
 
         # SelectionList should contain only task items (non-task header is disabled)
-        sel_list = app.query_one("SelectionList", SelectionList)
+        sel_list = app.query_one("#task-list")
         task_options = [o for o in sel_list.options if not str(o.value).startswith("__ro_")]
         assert len(task_options) == 2
 
@@ -67,7 +67,7 @@ async def test_initial_task_states(tmp_path: Path) -> None:
 
     app = DeskFlowApp(target_file=test_md, config=_make_config())
     async with app.run_test(size=(120, 40)) as pilot:
-        sel_list = app.query_one("SelectionList", SelectionList)
+        sel_list = app.query_one("#task-list")
         task_options = [o for o in sel_list.options if not str(o.value).startswith("__ro_")]
         assert len(task_options) == 2
 
@@ -120,7 +120,7 @@ async def test_task_toggle_writes_back_to_file(tmp_path: Path) -> None:
 
     app = DeskFlowApp(target_file=test_md, config=_make_config())
     async with app.run_test(size=(120, 40)) as pilot:
-        sel_list = app.query_one("SelectionList", SelectionList)
+        sel_list = app.query_one("#task-list")
 
         # Navigate to first task and toggle it with space
         await pilot.press("tab")  # Focus the selection list
@@ -330,7 +330,7 @@ async def test_app_handles_code_block_in_markdown(tmp_path: Path) -> None:
 
     app = DeskFlowApp(target_file=test_md, config=_make_config())
     async with app.run_test(size=(120, 40)) as pilot:
-        sel_list = app.query_one("SelectionList", SelectionList)
+        sel_list = app.query_one("#task-list")
         task_options = [o for o in sel_list.options if not str(o.value).startswith("__ro_")]
         assert len(task_options) == 1
         assert task_options[0].prompt == "Real task"
@@ -344,6 +344,6 @@ async def test_app_handles_empty_file(tmp_path: Path) -> None:
 
     app = DeskFlowApp(target_file=test_md, config=_make_config())
     async with app.run_test(size=(120, 40)) as pilot:
-        sel_list = app.query_one("SelectionList", SelectionList)
+        sel_list = app.query_one("#task-list")
         task_options = [o for o in sel_list.options if not str(o.value).startswith("__ro_")]
         assert len(task_options) == 0

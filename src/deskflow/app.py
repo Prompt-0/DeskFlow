@@ -66,6 +66,28 @@ class _MarkdownWatchHandler(FileSystemEventHandler):
             self._callback()
 
 
+# ── Custom Selection List ─────────────────────────────────────────────────────
+
+from textual.strip import Strip
+
+class TaskSelectionList(SelectionList[str]):
+    """A customized SelectionList that hides checkboxes for disabled items (headings)."""
+
+    def render_line(self, y: int) -> Strip:
+        _, scroll_y = self.scroll_offset
+        selection_index = scroll_y + y
+        
+        try:
+            selection = self.get_option_at_index(selection_index)
+            if getattr(selection, "disabled", False):
+                # Return the OptionList's render_line directly, bypassing SelectionList's checkbox injection
+                return super(SelectionList, self).render_line(y)
+        except Exception:
+            pass
+            
+        return super().render_line(y)
+
+
 # ── Conflict modal ────────────────────────────────────────────────────────────
 
 
@@ -158,7 +180,7 @@ class DeskFlowApp(App[None]):
             yield Label(
                 f"📄  {self._target_file.name}", id="file-label"
             )
-            yield SelectionList(id="task-list")
+            yield TaskSelectionList(id="task-list")
             yield Label("", id="progress-bar")
 
         with Container(id="right-panel"):
@@ -198,7 +220,7 @@ class DeskFlowApp(App[None]):
         try:
             self._doc = parse_markdown(self._target_file)
             self._known_sha = self._doc.sha256
-            self._display_lines = build_display_lines(self._target_file)
+            self._display_lines = build_display_lines(self._doc)
             self._has_local_changes = False
             self._populate_task_list()
         except OSError as exc:
@@ -210,7 +232,7 @@ class DeskFlowApp(App[None]):
 
     def _populate_task_list(self) -> None:
         """Rebuild the SelectionList from *_display_lines*."""
-        task_list = self.query_one("#task-list", SelectionList)
+        task_list = self.query_one("#task-list", TaskSelectionList)
         task_list.clear_options()
 
         for info in self._display_lines:
@@ -225,12 +247,14 @@ class DeskFlowApp(App[None]):
                 display = info.display_text
                 if display.startswith("#"):
                     # Header — style with markup
-                    label = f"[bold #bb9af7]{display}[/bold #bb9af7]"
+                    clean_text = display.lstrip("#").strip()
+                    label = f"[bold #bb9af7]{clean_text}[/bold #bb9af7]"
                 elif display.startswith("```") or display.startswith("~~~"):
                     label = f"[dim]{display}[/dim]"
                 else:
                     label = f"[dim italic]{display}[/dim italic]"
-                task_list.add_option(Selection(label, value=f"__ro_{id(info)}", disabled=True))
+                from textual.content import Content
+                task_list.add_option(Selection(Content.from_markup(label), value=f"__ro_{id(info)}", disabled=True))
 
         self._update_progress_bar()
 
@@ -246,13 +270,13 @@ class DeskFlowApp(App[None]):
 
     # ── Task toggling ─────────────────────────────────────────────────────────
 
-    @on(SelectionList.SelectedChanged)
-    def on_selection_changed(self, event: SelectionList.SelectedChanged) -> None:
+    @on(TaskSelectionList.SelectedChanged)
+    def on_selection_changed(self, event: TaskSelectionList.SelectedChanged) -> None:
         """Write task state change back to the Markdown file immediately."""
         if self._doc is None:
             return
 
-        task_list = self.query_one("#task-list", SelectionList)
+        task_list = self.query_one("#task-list", TaskSelectionList)
 
         # Build a map of task id → Task for quick lookup
         task_map: dict[str, Task] = {t.id: t for t in self._doc.tasks}

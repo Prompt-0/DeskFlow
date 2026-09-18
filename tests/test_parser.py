@@ -357,7 +357,8 @@ def test_reload_if_changed_missing_file(tmp_path: Path) -> None:
 def test_build_display_lines_includes_headers(tmp_path: Path) -> None:
     content = "# Today\n- [ ] Task A\n"
     p = make_md(tmp_path, content)
-    lines = build_display_lines(p)
+    doc = parse_markdown(p)
+    lines = build_display_lines(doc)
     # Should have both the header and the task
     assert len(lines) == 2
     assert lines[0].is_task is False
@@ -370,7 +371,8 @@ def test_build_display_lines_includes_headers(tmp_path: Path) -> None:
 def test_build_display_lines_excludes_blank_lines(tmp_path: Path) -> None:
     content = "# Header\n\n- [ ] Task\n"
     p = make_md(tmp_path, content)
-    lines = build_display_lines(p)
+    doc = parse_markdown(p)
+    lines = build_display_lines(doc)
     # Blank line should be excluded from display
     texts = [li.display_text for li in lines]
     assert "" not in texts
